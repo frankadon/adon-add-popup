@@ -1,1 +1,1 @@
-web gunicorn
+web gunicorn adonpages.wsgi:application --log-file -
