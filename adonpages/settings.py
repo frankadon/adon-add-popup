@@ -30,7 +30,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-lyl!qr)!=qc=9kwxm6iv*^-h3n!od()c+wohb48sicg5_1a9l-'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
 CORS_ALLOW_ALL_ORIGINS = True
@@ -98,14 +98,25 @@ WSGI_APPLICATION = 'adonpages.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'mydatabase',
+        'USER': 'postgres',
+        'PASSWORD': 'Fr@nk@dOn',
+        'HOST': '127.0.0.1',
+        'PORT': '5432',
     }
 }
 
 db_from_env = dj_database_url.config(conn_max_age=600)
+# print("db_from settings: ", db_from_env)
 DATABASES['default'].update(db_from_env)
 
 # Password validation
