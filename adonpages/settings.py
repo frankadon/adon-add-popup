@@ -117,6 +117,7 @@ DATABASES = {
 
 # db_from_env = dj_database_url.config(conn_max_age=600)
 # print("db_from settings: ", db_from_env)
+
 DATABASES['default'] = dj_database_url.config(
     conn_max_age=600, ssl_require=True)
 
