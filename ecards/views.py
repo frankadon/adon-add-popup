@@ -6,6 +6,7 @@ from rest_framework.decorators import api_view, authentication_classes, permissi
 from .serializers import CardDataSerialiser
 from .models import CardData
 from django.http import Http404
+from django.shortcuts import render
 # Create your views here.
 
 
@@ -29,6 +30,7 @@ class CardList(APIView):
     #         serializer.save(user=self.request.user)
     #         return Response(serializer.data, status=status.HTTP_201_CREATED)
     #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class CardDetails(APIView):
     queryset = CardData.objects.all().order_by('-created')
@@ -59,3 +61,12 @@ class CardDetails(APIView):
     #     card = self.get_object(pk)
     #     card.delete()
     #     return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+def card_list(request):
+    cards = CardData.objects.all().order_by('-created')
+    context = {
+        "title": "card list",
+        "cards": cards,
+    }
+    return render(request, "card_list.html", context)
