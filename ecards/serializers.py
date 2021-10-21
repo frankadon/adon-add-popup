@@ -9,7 +9,7 @@ class CardDataSerialiser(serializers.ModelSerializer):
         fields = [
             'id',
             'title',
-            'ref_code',
+            # 'ref_code',
             'business_name',
             'greet',
             'promotion',
