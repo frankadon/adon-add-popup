@@ -1,14 +1,39 @@
 {% extends "base.html" %}
+{% load crispy_forms_tags %}
 
 {% block content %}
 <div class="row">
-    <div class="col-sm-3">
-
-    </div>
-    <div class="col-sm-9">
+    
+    <div class="col-sm-4">
         <div class="card">
+            <div class="card-header">
+                <h3>Adds Form</h3>
+            </div>
+            <div class="card-body">
+                <form action="" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ cardform.business_name|as_crispy_field }}
+                    <input type="submit" value="Save" class="btn btn-primary btn-sm">
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-8">
+        <h3>{{title|title}}</h3>
+        <hr>
+        <div class="row row-cols-1 row-cols-md-3">
             {% for card in cards %}
-                {{ card.title }}
+            <div class="col mb-4">
+                <div class="card bg-dark text-white">
+                    <img src="{{card.image.url}}" class="card-img" alt="...">
+                    <div class="card-img-overlay d-flex flex-column">
+                      <h5 class="card-title">{{card.title|title}}</h5>
+                      <p class="card-text">{{card.greet}}</p>
+                      <p class="card-text">{{card.promotion}}</p>
+                      <p class="card-text">{{card.closing_statement}}</p>
+                    </div>
+                </div>
+            </div>
             {% endfor %}
         </div>
     </div>

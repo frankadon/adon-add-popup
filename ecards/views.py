@@ -4,9 +4,10 @@ from rest_framework import authentication, permissions, status
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication, TokenAuthentication
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from .serializers import CardDataSerialiser
+from .forms import CardForm
 from .models import CardData
 from django.http import Http404
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 # Create your views here.
 
 
@@ -24,12 +25,12 @@ class CardList(APIView):
         serializer = CardDataSerialiser(cards, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    # def post(self, request, format=None):
-    #     serializer = CardDataSerialiser(data=request.data)
-    #     if serializer.is_valid():
-    #         serializer.save(user=self.request.user)
-    #         return Response(serializer.data, status=status.HTTP_201_CREATED)
-    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def post(self, request, format=None):
+        serializer = CardDataSerialiser(data=request.data)
+        if serializer.is_valid():
+            serializer.save(user=self.request.user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class CardDetails(APIView):
@@ -49,24 +50,34 @@ class CardDetails(APIView):
         serializer = CardDataSerialiser(card)
         return Response(serializer.data)
 
-    # def put(self, request, pk, format=None):
-    #     card = self.get_object(pk)
-    #     serializer = CardDataSerialiser(card, data=request.data)
-    #     if serializer.is_valid():
-    #         serializer.save()
-    #         return Response(serializer.data)
-    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    #
-    # def delete(self, request, pk, format=None):
-    #     card = self.get_object(pk)
-    #     card.delete()
-    #     return Response(status=status.HTTP_204_NO_CONTENT)
+    def put(self, request, pk, format=None):
+        card = self.get_object(pk)
+        serializer = CardDataSerialiser(card, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk, format=None):
+        card = self.get_object(pk)
+        card.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 def card_list(request):
     cards = CardData.objects.all().order_by('-created')
+    cardform = CardForm(request.POST or None, request.FILES or None)
+    if request.method == "POST":
+        if cardform.is_valid():
+            instance = cardform.save(commit=False)
+            instance.user = request.user
+            instance.save()
+        return redirect('ecards:list')
+    else:
+        cardform = CardForm(request.POST or None, request.FILES or None)
     context = {
         "title": "card list",
         "cards": cards,
+        "cardform": cardform
     }
     return render(request, "card_list.html", context)

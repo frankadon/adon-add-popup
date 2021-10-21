@@ -17,13 +17,16 @@ class CardData(models.Model):
     title = models.CharField(
         max_length=200, default="merry christmas & happy new year")
     greet = models.TextField(
-        default="We would like to wish all our valuable customers a Merry Christmas and Happy New Year and Holiday Season!")
+        verbose_name="content", default="We would like to wish all our valuable customers a Merry Christmas and Happy New Year and Holiday Season!")
     promotion = models.CharField(max_length=80, default="up to 30% off")
     closing_statement = models.TextField(
         default="We will be closed for the Christmas Season From 24th December to the 2nd January")
-    image = models.ImageField(verbose_name="background image", blank=True, null=True)
-    add_start_date = models.DateField(blank=True, null=True, verbose_name="Pop up start date")
-    add_end_date = models.DateField(blank=True, null=True, verbose_name="Pop up end date")
+    image = models.ImageField(
+        verbose_name="background image", blank=True, null=True)
+    add_start_date = models.DateField(
+        blank=True, null=True, verbose_name="Pop up start date")
+    add_end_date = models.DateField(
+        blank=True, null=True, verbose_name="Pop up end date")
     is_popup_active = models.BooleanField(default=False)
     created = models.DateField(auto_now_add=True)
     updated = models.DateField(auto_now=True)
@@ -32,11 +35,11 @@ class CardData(models.Model):
         return self.title
 
 
-
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
         Token.objects.create(user=instance)
+
 
 @receiver(pre_save, sender=CardData)
 def pre_save_create_ref_code(sender, instance, *args, **kwargs):
